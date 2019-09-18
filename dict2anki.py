@@ -8,7 +8,7 @@ import socket
 import sys
 from io import BytesIO
 from typing import List, Tuple, Optional
-from urllib import request, error
+from urllib import request
 
 QUERY = 'https://dictionary.cambridge.org/zhs/' \
         '%E8%AF%8D%E5%85%B8/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/{}'
@@ -122,7 +122,9 @@ def convert(words: List[str]):
     with open(output_file_name, 'a', encoding='utf8') as fp:
         for word in words:
             w = word.strip()
-            if not w or w in visited:
+            if not w:
+                continue
+            if w in visited:
                 logging.info('skipping duplicate: "{}"'.format(w))
                 continue
             visited.add(w)
