@@ -67,14 +67,48 @@ class ExtractError(Exception):
     pass
 
 
+def extract_elements(html: str, element: str, attributes: str = '') -> List[str]:
+    _open = '<' + element
+    close = '/' + element + '>'
+    elements = []
+    tags = re.finditer(r'</?{}[\s\S]*?>'.format(element), html)
+    count = 0
+    start = -1
+    for tag in tags:
+        if tag.group(0).startswith(_open):
+            if start != -1:
+                count += 1
+            elif re.match(r'<{}[\s\S]*?{}[\s\S]*?>'.format(element, attributes), tag.group(0)):
+                count = 1
+                start = tag.start()
+        elif start != -1 and tag.group(0).endswith(close):
+            count -= 1
+            if count == 0:
+                elements.append(html[start:tag.end()])
+                start = -1
+    return elements
+
+
+def extract_title(body: str) -> str:
+    entry = extract_elements(body, 'div', 'class="pr entry-body__el"')[0]
+    header = extract_elements(entry, 'div', 'class="pos-header dpos-h"')[0]
+    title = extract_elements(header, 'div', 'class="di-title"')[0]
+    m_header = re.match(r'^(<div class="pos-header dpos-h">)([\s\S]*)(</div>)$', header)
+    header = m_header.group(1) + title + m_header.group(3)
+    m_entry = re.match(r'^(<div class="pr entry-body__el">)([\s\S]*)(</div>)$', entry)
+    entry = m_entry.group(1) + header + m_entry.group(3)
+    m_body = re.search(
+        r'^(<div class="di-body"><div class="entry"><div class="entry-body">)([\s\S]*?)(</div></div></div>)$', body)
+    return m_body.group(1) + entry + m_body.group(3)
+
+
 def extract_fields(source: str) -> Optional[Tuple[str, str]]:
     try:
         match = re.search(r'(<div class="di-body">[\s\S]*?/div>)<small class', source)
         # body = re.sub(r'>\s+<', r'><', match.group(1))
         body = match.group(1)
         body = body.replace('\n', '')
-        match = re.search(r'(<div class="di-title">[\s\S]*?/div>)<div class="posgram', body)
-        title = match.group(1)
+        title = extract_title(body)
 
         # remove titles
         body = re.sub(r'<div class="di-title"[\s\S]*?/div>\s*?<div class="posgram', r'<div class="posgram', body)
