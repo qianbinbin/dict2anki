@@ -131,6 +131,8 @@ def extract_fields(source: str) -> Optional[Tuple[str, str]]:
                       body)
         # remove js
         body = re.sub(r'<script[\s\S]*?</script>', r'', body)
+        # remove underlines
+        body = re.sub(r'<span class="x-h dx-h"[\s\S]*?>([\s\S]*?)</span>', r'\g<1>', body)
         return title, body
     except Exception as e:
         raise ExtractError(e)
