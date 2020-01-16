@@ -28,6 +28,10 @@ URL_STYLE = 'https://dictionary.cambridge.org/zhs/common.css'
 
 URL_FONT = 'https://dictionary.cambridge.org/zhs/external/fonts/cdoicons.woff'
 
+URL_AMP = 'https://cdn.ampproject.org/v0.js'
+
+URL_AMP_ACCORDION = 'https://cdn.ampproject.org/v0/amp-accordion-0.1.js'
+
 THRESHOLD_COLLAPSE = 3000
 
 HTML_COLLAPSE = '<amp-accordion><section>{}</section></amp-accordion>'
@@ -66,9 +70,12 @@ class CambridgeExtractor(CardExtractor):
         _font = os.path.basename(_font)
         style = re.sub(r'url\([\S]*?/{}'.format(font), 'url({}'.format(_font), style)
         style = '<style>{}</style>'.format(style)
-        style += '<script async src="https://cdn.ampproject.org/v0.js"></script>'
-        style += '<script async custom-element="amp-accordion" ' \
-                 'src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"></script>'
+        style += '<script type="text/javascript">{}</script>'.format(
+            url_get_content(URL_AMP, fake_headers())
+        )
+        style += '<script type="text/javascript">{}</script>'.format(
+            url_get_content(URL_AMP_ACCORDION, fake_headers())
+        )
         Log.i(TAG, 'retrieved styling')
         return style
 
