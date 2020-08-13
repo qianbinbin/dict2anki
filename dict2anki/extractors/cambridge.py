@@ -56,7 +56,7 @@ class CambridgeExtractor(CardExtractor):
 
     def _retrieve_styling(self) -> str:
         Log.i(TAG, 'retrieving styling')
-        style = url_get_content(URL_STYLE)
+        style = url_get_content(URL_STYLE, fake_headers())
         font = url_save_guess_file(URL_FONT, fake_headers())[0]
         # add '_' to tell Anki that the file is used by template
         _font = url_save(
