@@ -1,4 +1,4 @@
-# 简介
+## 简介
 
 将单词批量转换为 Anki 卡片，数据来源：
 
@@ -12,13 +12,13 @@
 
    <img src="https://raw.githubusercontent.com/qianbinbin/dict2anki/master/images/mobile-preview.png" width = "300" align=center />
 
-# 使用环境
+## 使用环境
 
 - [Python3](https://www.python.org/)
 
-# 使用方法
+## 使用方法
 
-## 1. 准备单词文件
+### 1. 准备单词文件
 
 以换行分隔，`#`开头的行将被忽略，例如`vocabulary.txt`:
 
@@ -39,16 +39,16 @@ reflect on
 abbreviate
 ```
 
-## 2. 运行脚本
+### 2. 运行脚本
 
-### 方式一：通过 [pip](https://pip.pypa.io/en/stable/installing/) 安装
+#### 方式一：通过 [pip](https://pip.pypa.io/en/stable/installing/) 安装
 
 ```sh
 $ pip3 install dict2anki
 $ dict2anki -i /path/to/vocabulary.txt
 ```
 
-### 方式二：下载源码
+#### 方式二：下载源码
 
 ```sh
 $ git clone git@github.com:qianbinbin/dict2anki.git
@@ -62,7 +62,7 @@ $ python3 -m dict2anki -i /path/to/vocabulary.txt
 
 `cards.txt`以追加形式增加内容，可以多次运行脚本以便输入到同一`cards.txt`文件。
 
-## 3. 新建模板
+### 3. 新建模板
 
 打开桌面版 Anki，`工具`——`管理笔记类型`——`添加`——`基础`，输入名称，例如`基础单词`，选中`基础单词`，点击右侧`卡片`，
 
@@ -70,11 +70,11 @@ $ python3 -m dict2anki -i /path/to/vocabulary.txt
 - 将`格式刷`中的内容替换为`styling.txt`中的内容
 - 将`背面模板`中的内容替换为`back_template.txt`中的内容
 
-## 4. 复制媒体文件
+### 4. 复制媒体文件
 
-将`collection.media`文件夹中的文件全部复制到 [Anki 文件夹](https://apps.ankiweb.net/docs/manual.html#file-locations) 对应用户的`collection.media`文件夹下。
+将`collection.media`文件夹中的文件全部复制到 [Anki 文件夹](https://docs.ankiweb.net/#/files?id=file-locations) 对应用户的`collection.media`文件夹下。
 
-## 5. 导入卡片
+### 5. 导入卡片
 
 创建所需记忆库，例如`英语单词`。
 
