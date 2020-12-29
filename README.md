@@ -18,7 +18,7 @@
 
 ## 使用方法
 
-### 1. 准备单词文件
+### 一、准备单词文件
 
 以换行分隔，`#`开头的行将被忽略，例如`vocabulary.txt`:
 
@@ -37,9 +37,10 @@ fulfill
 in terms of
 reflect on
 abbreviate
+cater for sb/sth
 ```
 
-### 2. 运行脚本
+### 二、运行脚本
 
 #### 方式一：通过 [pip](https://pip.pypa.io/en/stable/installing/) 安装
 
@@ -51,31 +52,36 @@ $ dict2anki -i /path/to/vocabulary.txt
 #### 方式二：下载源码
 
 ```sh
-$ git clone git@github.com:qianbinbin/dict2anki.git
-$ cd dict2anki/
+$ git clone https://github.com/qianbinbin/dict2anki.git && cd dict2anki
+$ # git clone git@github.com:qianbinbin/dict2anki.git && cd dict2anki
+$ # wget https://github.com/qianbinbin/dict2anki/archive/master.zip && unzip master.zip && cd dict2anki-master
 $ python3 -m dict2anki -i /path/to/vocabulary.txt
 ```
 
-使用`-i`参数指定输入单词文件。
+使用 `-i` 参数指定输入单词文件。
 
 默认在当前目录下生成。
 
-`cards.txt`以追加形式增加内容，可以多次运行脚本以便输入到同一`cards.txt`文件。
+`cards.txt` 以追加形式增加内容，可以多次运行脚本以便输入到同一 `cards.txt` 文件。
 
-### 3. 新建模板
+### 三、导入
 
-打开桌面版 Anki，`工具`——`管理笔记类型`——`添加`——`基础`，输入名称，例如`基础单词`，选中`基础单词`，点击右侧`卡片`，
+#### 1. 新建模板
 
-- 将`正面模板`中的内容替换为`front_template.txt`中的内容
-- 将`格式刷`中的内容替换为`styling.txt`中的内容
-- 将`背面模板`中的内容替换为`back_template.txt`中的内容
+打开桌面版 Anki，`工具` -> `管理笔记类型` -> `添加` -> `基础`，输入名称，例如 `基础单词`，选中 `基础单词`，点击右侧 `卡片`，
 
-### 4. 复制媒体文件
+- 将 `front_template.txt` 中的内容复制到 `正面模板`，
+- 将 `styling.txt` 中的内容复制到 `格式刷`，
+- 将 `back_template.txt` 中的内容复制到 `背面模板`，
 
-将`collection.media`文件夹中的文件全部复制到 [Anki 文件夹](https://docs.ankiweb.net/#/files?id=file-locations) 对应用户的`collection.media`文件夹下。
+以上“复制”指完全替换，不是粘贴到原始内容后。
 
-### 5. 导入卡片
+#### 2. 复制媒体文件
 
-创建所需记忆库，例如`英语单词`。
+将 `collection.media` 文件夹中的文件全部复制到 [Anki 文件夹](https://docs.ankiweb.net/#/files?id=file-locations) 对应用户的 `collection.media` 文件夹下。
 
-`文件`——`导入`，选择`cards.txt`，`类型`选择刚刚新建的笔记类型`基础单词`，`牌组`选择`英语单词`，勾选`允许在字段中使用HTML`，点击`导入`。
+#### 3. 导入卡片
+
+创建所需记忆库，例如 `英语单词`。
+
+`文件` -> `导入`，选择 `cards.txt`，`类型` 选择刚刚新建的笔记类型 `基础单词`，`牌组` 选择 `英语单词`，勾选 `允许在字段中使用 HTML`，点击 `导入`。
