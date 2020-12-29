@@ -125,6 +125,7 @@ class CambridgeExtractor(CardExtractor):
             back = htmls.sub(back, remove_tag, 'span', 'class="x-h dx-h"')
             # remove adds
             back = htmls.removeall(back, 'div', 'ad_contentslot')
+            back = htmls.removeall(back, 'div', 'class="bb hax"')
             # collapse long cards
             if len(back) > THRESHOLD_COLLAPSE:
                 back = self._collapse(back)
