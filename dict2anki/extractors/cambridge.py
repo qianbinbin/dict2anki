@@ -80,9 +80,11 @@ class CambridgeExtractor(CardExtractor):
         return style
 
     def get_card(self, word: str) -> Tuple[str, List[str]]:
-        word = word.strip()
         Log.i(TAG, 'querying "{}"'.format(word))
-        response = urlopen_with_retry(URL_QUERY.format(urllib.parse.quote(word)), fake_headers())
+        response = urlopen_with_retry(
+            URL_QUERY.format(urllib.parse.quote('-'.join(word.split()).replace('/', '-'))),
+            fake_headers()
+        )
         actual = urllib.parse.urlsplit(response.geturl()).path.rsplit('/', 1)[-1]
         actual = ' '.join(actual.split('-'))
         if not actual:

@@ -12,6 +12,8 @@ class TestCambridge(TestCase):
     def test_CambridgeExtractor(self):
         extractor = CambridgeExtractor()
         self.assertEqual('cater for sb sth', extractor.get_card('cater to')[0])
+        self.assertEqual('cater for sb sth', extractor.get_card('cater for sb/sth')[0])
+        self.assertEqual('cater for sb sth', extractor.get_card('  cater   for sb/sth ')[0])
         extractor.generate_front_template()
         extractor.generate_back_template()
         extractor.generate_styling()
