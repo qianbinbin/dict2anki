@@ -21,30 +21,33 @@ def parse_args():
     parser = argparse.ArgumentParser(
         prog='dict2anki',
         usage='dict2anki [OPTION]...',
-        description='A tool converting words to cards for Anki to import.',
-        add_help=False,
+        description='dict2anki is a tool converting words to Anki cards.',
+        add_help=False
     )
     parser.add_argument(
         '-h', '--help', action='store_true',
-        help='Print this help message and exit.'
+        help='show this help message and exit'
     )
     parser.add_argument(
         '-i', '--input-file', metavar='FILE', type=argparse.FileType('r'),
-        help='Read words from FILE, split by lines. Lines starting with "#" will be ignored.'
+        help='read words from FILE split by lines, ignoring lines starting with "#"'
     )
     parser.add_argument(
-        '-o', '--output-path', metavar='PATH', help='Set output path.'
+        '-o', '--output-path', metavar='PATH', help='set output path'
     )
     parser.add_argument(
         '-e', '--extractor', metavar='DICT',
-        help='Available extractors: {}.'.format(list(EXTRACTORS.keys()))
+        help='available extractors: {}, default: {}'.format(', '.join(list(EXTRACTORS.keys())), DEFAULT_EXTRACTOR)
     )
     parser.add_argument(
         '-d', '--debug', action='store_true',
-        help='Show debug info.'
+        help='show debug info'
     )
     args = parser.parse_args()
 
+    if args.help:
+        parser.print_help()
+        sys.exit()
     if args.debug:
         Log.level = Log.DEBUG
     if not args.input_file:

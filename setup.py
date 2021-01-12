@@ -5,11 +5,11 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setup(
     name='dict2anki',
-    version='0.2.7',
+    version='0.2.8',
     author='Binbin Qian',
     author_email='qianbinbin@hotmail.com',
     url='https://github.com/qianbinbin/dict2anki',
-    description='A tool converting words to cards for Anki to import.',
+    description='dict2anki is a tool converting words to Anki cards.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=['dict2anki', 'dict2anki.extractors'],
