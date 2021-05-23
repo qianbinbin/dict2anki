@@ -17,7 +17,8 @@ DEFAULT_BACK_TEMPLATE_FILE = 'back_template.txt'
 DEFAULT_STYLING_FILE = 'styling.txt'
 DEFAULT_CARDS_FILE = 'cards.txt'
 
-DEFAULT_FRONT_TEMPLATE = '''{{正面}}'''
+DEFAULT_FRONT_TEMPLATE = '''{{tts en_US:正面}}
+{{正面}}'''
 
 DEFAULT_BACK_TEMPLATE = '''{{FrontSide}}
 <hr id=answer>
