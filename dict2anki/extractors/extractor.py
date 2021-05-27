@@ -1,3 +1,4 @@
+import csv
 import os
 from abc import ABCMeta, abstractmethod
 from typing import Tuple, List
@@ -83,6 +84,7 @@ class CardExtractor(metaclass=ABCMeta):
         skipped = []
         cf = valid_path(self.cards_file)
         with open(cf, 'a', encoding='utf8') as fp:
+            writer = csv.writer(fp)
             for word in words:
                 if word in visited:
                     Log.i(TAG, 'skipping duplicate: "{}"'.format(word))
@@ -94,9 +96,7 @@ class CardExtractor(metaclass=ABCMeta):
                     skipped.append(word)
                     Log.w(TAG, 'skipped: "{}"'.format(word))
                 else:
-                    if fp.tell():
-                        fp.write('\n')
-                    fp.write('\t'.join(fields))
+                    writer.writerow(fields)
                     visited.add(word)
                     visited.add(actual)
         if skipped:
