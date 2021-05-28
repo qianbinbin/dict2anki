@@ -1,3 +1,4 @@
+import time
 from unittest import TestCase
 
 from dict2anki.utils import *
@@ -22,3 +23,17 @@ class TestUtils(TestCase):
         Log.i(TAG, 'info log')
         Log.w(TAG, 'warn log')
         Log.e(TAG, 'error log')
+
+    def test_progress_bar(self):
+        bar = ProgressBar()
+        bar.update()
+        time.sleep(0.5)
+        bar.increment(10)
+        time.sleep(0.5)
+        bar.increment(20)
+        time.sleep(0.5)
+        bar.extra = 'test extra'
+        bar.progress += 69
+        time.sleep(0.5)
+        bar.increment(1)
+        bar.done()

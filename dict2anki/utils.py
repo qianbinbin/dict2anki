@@ -1,10 +1,12 @@
 import os
 import re
 import sys
+from typing import Callable
 
 __all__ = [
     'Log',
     'get_tag', 'valid_path',
+    'ProgressBar'
 ]
 
 
@@ -104,3 +106,65 @@ def valid_path(path: str, force: bool = True) -> str:
         path = os.path.join(dir_name, base_name)
     Log.d(TAG, 'valid path, path={}'.format(path))
     return path
+
+
+class ProgressBar:
+    def __init__(self, total: int = 100, progress: int = 0, detail: Callable[[int], str] = None, extra: str = None):
+        self._total = total
+        self._progress = progress
+        self._detail = detail
+        self._extra = extra
+        self._show = False
+        self._formation = '{:>5}% ├{:─<50}┤ {:>9} / {:<9}{:>12}'
+
+    @property
+    def total(self):
+        return self._total
+
+    @total.setter
+    def total(self, total: int):
+        self._total = total
+        self.update()
+
+    @property
+    def progress(self):
+        return self._progress
+
+    @progress.setter
+    def progress(self, progress: int):
+        self._progress = progress
+        self.update()
+
+    @property
+    def extra(self):
+        return self._extra
+
+    @extra.setter
+    def extra(self, extra: str):
+        self._extra = extra
+        self.update()
+
+    def update(self):
+        if not self._show:
+            self._show = True
+        percentage = round(self._progress * 100 / self._total, 1)
+        if percentage >= 100:
+            percentage = 100
+        bar_count = int(percentage) // 2
+        if self._detail:
+            progress, total = self._detail(self._progress), self._detail(self._total)
+        else:
+            progress, total = self._progress, self._total
+        extra = '' if self._extra is None else self._extra
+        line = self._formation.format(percentage, '█' * bar_count, progress, total, extra)
+        sys.stdout.write('\r' + line)
+        sys.stdout.flush()
+
+    def increment(self, n: int):
+        self._progress += n
+        self.update()
+
+    def done(self):
+        if self._show:
+            print()
+            self._show = False

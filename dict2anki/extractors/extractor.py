@@ -3,7 +3,7 @@ import os
 from abc import ABCMeta, abstractmethod
 from typing import Tuple, List
 
-from dict2anki.utils import valid_path, Log, get_tag
+from dict2anki.utils import valid_path, Log, get_tag, ProgressBar
 
 __all__ = [
     'WordNotFoundError', 'ExtractError', 'CardExtractor',
@@ -85,7 +85,10 @@ class CardExtractor(metaclass=ABCMeta):
         cf = valid_path(self.cards_file)
         with open(cf, 'a', encoding='utf8') as fp:
             writer = csv.writer(fp)
+            bar = ProgressBar(len(words))
             for word in words:
+                bar.increment(1)
+                bar.extra = word
                 if word in visited:
                     Log.i(TAG, 'skipping duplicate: "{}"'.format(word))
                     continue
@@ -99,6 +102,7 @@ class CardExtractor(metaclass=ABCMeta):
                     writer.writerow(fields)
                     visited.add(word)
                     visited.add(actual)
+            bar.done()
         if skipped:
             Log.w(TAG, 'skipped {} words:\n'.format(len(skipped)) + '\n'.join(skipped))
         Log.i(TAG, 'generated {} cards to: {}'.format(len(words) - len(skipped), cf))

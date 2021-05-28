@@ -80,7 +80,7 @@ class CambridgeExtractor(CardExtractor):
         return style
 
     def get_card(self, word: str) -> Tuple[str, List[str]]:
-        Log.i(TAG, 'querying "{}"'.format(word))
+        Log.d(TAG, 'querying "{}"'.format(word))
         response = urlopen_with_retry(
             URL_QUERY.format(urllib.parse.quote(word.replace('/', ' '))),
             fake_headers()
@@ -93,7 +93,7 @@ class CambridgeExtractor(CardExtractor):
             Log.i(TAG, 'redirected to: "{}"'.format(actual))
         content = url_get_content(response)
         fields = self._extract_fields(content)
-        Log.i(TAG, 'parsed: "{}"'.format(actual))
+        Log.d(TAG, 'parsed: "{}"'.format(actual))
         return actual, fields
 
     def _extract_fields(self, html_str: str) -> List[str]:
