@@ -78,10 +78,22 @@ $ python3 -m dict2anki -i /path/to/vocabulary.txt
 
 #### 2. 复制媒体文件
 
-将 `collection.media` 文件夹中的文件全部复制到 [Anki 文件夹](https://docs.ankiweb.net/#/files?id=file-locations) 对应用户的 `collection.media` 文件夹下。
+将 `collection.media` 文件夹中的文件全部复制到 [Anki 文件夹](https://docs.ankiweb.net/files.html#file-locations) 对应用户的 `collection.media` 文件夹下。
 
 #### 3. 导入卡片
 
 创建所需记忆库，例如 `英语单词`。
 
 `文件` -> `导入`，选择 `cards.txt`，`类型` 选择刚刚新建的笔记类型 `基础单词`，`牌组` 选择 `英语单词`，勾选 `允许在字段中使用 HTML`，点击 `导入`。
+
+### 四、导出（macOS、Linux 等类 Unix 系统）
+
+要还原为[第一步](#一准备单词文件)中的单词文件，打开桌面版 Anki，`文件` -> `导出...`，导出格式选择 `纯文本格式的笔记`，牌组选择 `英语单词`，取消勾选 `包含标签` 和 `包括HTML和引用的媒体`，并点击`导出`。
+
+假设导出文件名为 `notes.txt`，使用以下命令：
+
+```sh
+awk -F '\t' '{print $1}' notes.txt >out.txt
+```
+
+此时单词已经还原到 `out.txt` 中。
