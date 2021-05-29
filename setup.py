@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setup(
     name='dict2anki',
-    version='0.5.0',
+    version='0.5.1',
     author='Binbin Qian',
     author_email='qianbinbin@hotmail.com',
     url='https://github.com/qianbinbin/dict2anki',
