@@ -13,8 +13,8 @@ TAG = get_tag(__name__)
 
 DEFAULT_OUT_PATH = os.path.join(os.curdir, TAG)
 DEFAULT_MEDIA_FOLDER = 'collection.media'
-DEFAULT_FRONT_TEMPLATE_FILE = 'front_template.txt'
-DEFAULT_BACK_TEMPLATE_FILE = 'back_template.txt'
+DEFAULT_FRONT_TEMPLATE_FILE = 'front-template.txt'
+DEFAULT_BACK_TEMPLATE_FILE = 'back-template.txt'
 DEFAULT_STYLING_FILE = 'styling.txt'
 DEFAULT_CARDS_FILE = 'cards.txt'
 

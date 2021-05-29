@@ -16,8 +16,8 @@ TAG = get_tag(__name__)
 
 DEFAULT_OUT_PATH = os.path.join(os.curdir, TAG)
 
-DEFAULT_BACK_TEMPLATE = '''{{FrontSide}}
-{{背面}}'''
+DEFAULT_FRONT_TEMPLATE = '''<hr>
+<div style="text-align:center">{{正面}}</div>'''
 
 # 'https://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/direct/?datasetsearch=english-chinese-simplified&q={}'
 
@@ -32,12 +32,13 @@ URL_AMP = 'https://cdn.ampproject.org/v0.js'
 
 URL_AMP_ACCORDION = 'https://cdn.ampproject.org/v0/amp-accordion-0.1.js'
 
-THRESHOLD_COLLAPSE = 3000
+THRESHOLD_COLLAPSE = 4096
 
 HTML_COLLAPSE = '<amp-accordion><section>{}</section></amp-accordion>'
 
-HTML_COLLAPSE1 = '<amp-accordion><section><header class="ca_h daccord_h">' \
-                 '<i class="i i-plus ca_hi"></i>{}</header>{}</section></amp-accordion>'
+HTML_COLLAPSE1 = '<amp-accordion><section>' \
+                 '<header class="ca_h daccord_h"><i class="i i-plus ca_hi"></i>{}</header>{}' \
+                 '</section></amp-accordion>'
 
 parse_tag = re.compile(r'^(<[\s\S]*?>)([\s\S]*)(</[\s\S]*>)$')
 
@@ -46,7 +47,7 @@ class CambridgeExtractor(CardExtractor):
 
     def __init__(self, out_path: str = DEFAULT_OUT_PATH, **kwargs):
         super().__init__(out_path, **kwargs)
-        self._back_template = DEFAULT_BACK_TEMPLATE
+        self._front_template = DEFAULT_FRONT_TEMPLATE
         self._styling = None
 
     def generate_styling(self):
@@ -62,19 +63,18 @@ class CambridgeExtractor(CardExtractor):
         _font = url_save(
             URL_FONT,
             headers=fake_headers(),
-            filename=valid_path(
-                os.path.join(self.media_path, '_' + font)
-            )
+            filename=valid_path(os.path.join(self.media_path, '_' + font)),
+            force=True
         )[0]
         Log.i(TAG, 'saved font file to: {}'.format(_font))
         _font = os.path.basename(_font)
         style = re.sub(r'url\([\S]*?/{}'.format(font), 'url({}'.format(_font), style)
-        style = '<style>{}</style>'.format(style)
-        style += '<script type="text/javascript">{}</script>'.format(
-            url_get_content(URL_AMP, fake_headers())
+        style = '<style>{}</style>\n'.format(style)
+        style += '<script type="text/javascript">{}</script>\n'.format(
+            url_get_content(URL_AMP, fake_headers()).replace('\n', ' ')
         )
-        style += '<script type="text/javascript">{}</script>'.format(
-            url_get_content(URL_AMP_ACCORDION, fake_headers())
+        style += '<script type="text/javascript">{}</script>\n'.format(
+            url_get_content(URL_AMP_ACCORDION, fake_headers()).replace('\n', ' ')
         )
         Log.i(TAG, 'retrieved styling')
         return style
@@ -98,15 +98,18 @@ class CambridgeExtractor(CardExtractor):
 
     def _extract_fields(self, html_str: str) -> List[str]:
         try:
-            back = htmls.find(html_str, 'div', 'class="di-body"').replace('\n', '')
+            back = htmls.find(html_str, 'div', 'class="di-body"')
             front = htmls.find(back, 'div', 'class="di-title"')
 
             # remove titles
             back = htmls.removeall(back, 'div', 'class="di-title"')
             # remove audios
             back = htmls.removeall(back, 'span', 'class="daud"')
-            # remove amp-access
-            back = htmls.removeall(back, 'a', 'amp-access=')
+            # remove phrases and idioms
+            back = htmls.removeall(back, 'div', 'class="xref')
+            # seems useless
+            back = htmls.removeall(back, 'div', 'class="cid"')
+            back = htmls.removeall(back, 'div', 'class="dwl hax"')
 
             def remove_tag(h):
                 return parse_tag.sub(r'\g<2>', h)
@@ -145,6 +148,7 @@ class CambridgeExtractor(CardExtractor):
             Log.d(TAG, '{}\n{}\n{}'.format(m.group(1), m.group(2), m.group(3)))
             return m.group(1) + HTML_COLLAPSE.format(m.group(2)) + m.group(3)
 
-        html_str = htmls.sub(html_str, collapse2, 'div', 'xref phrasal_verbs hax dxref-w lmt-25 lmb-25')
-        html_str = htmls.sub(html_str, collapse2, 'div', 'xref idioms hax dxref-w lmt-25 lmb-25')
+        # these were removed
+        # html_str = htmls.sub(html_str, collapse2, 'div', 'xref phrasal_verbs hax dxref-w lmt-25 lmb-25')
+        # html_str = htmls.sub(html_str, collapse2, 'div', 'xref idioms hax dxref-w lmt-25 lmb-25')
         return html_str
