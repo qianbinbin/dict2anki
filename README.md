@@ -1,16 +1,14 @@
 ## 简介
 
+![](images/usage.svg)
+
 将单词批量转换为 Anki 卡片，当前支持的词典：
 
 - [剑桥词典](https://dictionary.cambridge.org/zhs/%E8%AF%8D%E5%85%B8/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/)
 
-  macOS 端预览：
+  预览：
 
-   <img src="https://raw.githubusercontent.com/qianbinbin/dict2anki/master/images/mac-preview.png" width = "500" align=center />
-
-  手机端预览：
-
-   <img src="https://raw.githubusercontent.com/qianbinbin/dict2anki/master/images/mobile-preview.png" width = "300" align=center />
+  <img src=images/mac-preview.png width=75%>
 
 ## 使用环境
 
