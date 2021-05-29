@@ -21,6 +21,8 @@ DEFAULT_FRONT_TEMPLATE = '''<hr>
 
 # 'https://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/direct/?datasetsearch=english-chinese-simplified&q={}'
 
+URL_ROOT = 'https://dictionary.cambridge.org/'
+
 URL_QUERY = 'https://dictionary.cambridge.org/zhs/' \
             '%E8%AF%8D%E5%85%B8/%E8%8B%B1%E8%AF%AD-%E6%B1%89%E8%AF%AD-%E7%AE%80%E4%BD%93/{}'
 
@@ -29,6 +31,8 @@ URL_STYLE = 'https://dictionary.cambridge.org/zhs/common.css'
 URL_FONT = 'https://dictionary.cambridge.org/zhs/external/fonts/cdoicons.woff'
 
 URL_AMP = 'https://cdn.ampproject.org/v0.js'
+
+URL_AMP_AUDIO = 'https://cdn.ampproject.org/v0/amp-audio-0.1.js'
 
 URL_AMP_ACCORDION = 'https://cdn.ampproject.org/v0/amp-accordion-0.1.js'
 
@@ -74,6 +78,9 @@ class CambridgeExtractor(CardExtractor):
             url_get_content(URL_AMP, fake_headers()).replace('\n', ' ')
         )
         style += '<script type="text/javascript">{}</script>\n'.format(
+            url_get_content(URL_AMP_AUDIO, fake_headers()).replace('\n', ' ')
+        )
+        style += '<script type="text/javascript">{}</script>\n'.format(
             url_get_content(URL_AMP_ACCORDION, fake_headers()).replace('\n', ' ')
         )
         Log.i(TAG, 'retrieved styling')
@@ -103,8 +110,10 @@ class CambridgeExtractor(CardExtractor):
 
             # remove titles
             back = htmls.removeall(back, 'div', 'class="di-title"')
-            # remove audios
-            back = htmls.removeall(back, 'span', 'class="daud"')
+            # # remove audios
+            # back = htmls.removeall(back, 'span', 'class="daud"')
+            # support online audios
+            back = re.sub(r'src="/zhs/media', 'src="{}zhs/media'.format(URL_ROOT), back)
             # remove phrases and idioms
             back = htmls.removeall(back, 'div', 'class="xref')
             # seems useless
