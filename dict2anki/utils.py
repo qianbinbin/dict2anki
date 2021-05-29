@@ -115,7 +115,7 @@ class ProgressBar:
         self._detail = detail
         self._extra = extra
         self._show = False
-        self._formation = '{:>5}% ├{:─<50}┤ {:>9} / {:<9}{:>12}'
+        self._formation = '{:>5}% ├{:─<25}┤ {:>9} / {:<9}{:>20}'
 
     @property
     def total(self):
@@ -150,7 +150,7 @@ class ProgressBar:
         percentage = round(self._progress * 100 / self._total, 1)
         if percentage >= 100:
             percentage = 100
-        bar_count = int(percentage) // 2
+        bar_count = int(percentage) // 4
         if self._detail:
             progress, total = self._detail(self._progress), self._detail(self._total)
         else:
