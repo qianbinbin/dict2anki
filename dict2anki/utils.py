@@ -115,7 +115,7 @@ class ProgressBar:
         self._detail = detail
         self._extra = extra
         self._show = False
-        self._formation = '{:>5}% ├{:─<25}┤ {:>9} / {:<9}{:>20}'
+        self._formation = '{:>5}% ├{:─<25}┤ {:>9} / {:<9}{:>23}'
 
     @property
     def total(self):
