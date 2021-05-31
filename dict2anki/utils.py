@@ -160,7 +160,7 @@ class ProgressBar:
         sys.stdout.write('\r' + line)
         sys.stdout.flush()
 
-    def increment(self, n: int):
+    def increment(self, n: int = 1):
         self._progress += n
         self.update()
 
