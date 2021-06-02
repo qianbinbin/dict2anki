@@ -1,3 +1,4 @@
+import asyncio
 import csv
 import os
 from abc import ABCMeta, abstractmethod
@@ -32,6 +33,8 @@ DEFAULT_STYLING = '''.card {
  background-color: white;
 }
 '''
+
+DEFAULT_CONCURRENCY = 8
 
 
 class WordNotFoundError(Exception):
@@ -79,33 +82,51 @@ class CardExtractor(metaclass=ABCMeta):
         Log.i(TAG, 'generated styling to: {}'.format(sf))
 
     def generate_cards(self, *words: str):
-        Log.i(TAG, 'trying to generate {} cards'.format(len(words)))
+        Log.i(TAG, 'generating {} cards'.format(len(words)))
+        file = valid_path(self.cards_file)
+
+        # region Access with lock in coroutines
         visited = set()
         skipped = []
-        cf = valid_path(self.cards_file)
-        with open(cf, 'a', encoding='utf8') as fp:
+        bar = ProgressBar(len(words))
+        lock = asyncio.Lock()
+
+        # endregion
+
+        async def do_generate():
+            sem = asyncio.Semaphore(DEFAULT_CONCURRENCY)
+
+            async def do_get(word: str) -> List[str]:
+                async with sem:
+                    try:
+                        actual, fields = await asyncio.get_running_loop().run_in_executor(None, self.get_card, word)
+                    except Exception as e:
+                        Log.e(TAG, e)
+                        async with lock:
+                            skipped.append(word)
+                        Log.e(TAG, 'skipped: "{}"'.format(word))
+                    else:
+                        async with lock:
+                            bar.extra = actual
+                            bar.increment()
+                            if actual not in visited:
+                                visited.add(word)
+                                visited.add(actual)
+                                return fields
+
+            # gather all tasks to keep results stable
+            return await asyncio.gather(*[do_get(w) for w in words])
+
+        bar.update()
+        cards = asyncio.run(do_generate())
+        cards = [card for card in cards if card]
+        bar.done()
+        with open(file, 'a', encoding='utf8') as fp:
             writer = csv.writer(fp)
-            bar = ProgressBar(len(words))
-            for word in words:
-                bar.increment(1)
-                bar.extra = word
-                if word in visited:
-                    Log.i(TAG, 'skipping duplicate: "{}"'.format(word))
-                    continue
-                try:
-                    actual, fields = self.get_card(word)
-                except Exception as e:
-                    Log.e(TAG, e)
-                    skipped.append(word)
-                    Log.w(TAG, 'skipped: "{}"'.format(word))
-                else:
-                    writer.writerow(fields)
-                    visited.add(word)
-                    visited.add(actual)
-            bar.done()
+            writer.writerows(cards)
+        Log.i(TAG, 'generated {} cards to: {}'.format(len(cards), file))
         if skipped:
-            Log.w(TAG, 'skipped {} words:\n'.format(len(skipped)) + '\n'.join(skipped))
-        Log.i(TAG, 'generated {} cards to: {}'.format(len(words) - len(skipped), cf))
+            Log.e(TAG, 'skipped {} words:\n{}'.format(len(skipped), '\n'.join(skipped)))
 
     @abstractmethod
     def get_card(self, word: str) -> Tuple[str, List[str]]:
