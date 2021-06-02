@@ -42,7 +42,7 @@ def urlopen_with_retry(url: Union[str, Request],
         try:
             return urlopen(url, **kwargs)
         except socket.timeout as e:
-            Log.i(TAG, 'urlopen attempt {} timeout'.format(i))
+            Log.w(TAG, 'urlopen attempt {} timeout'.format(i))
             if i == retry:
                 raise e
         except Exception as e:
@@ -56,8 +56,22 @@ def url_get_content(url: Union[str, Request, HTTPResponse],
                     retry: int = 5,
                     **kwargs) -> Union[bytes, str]:
     Log.d(TAG, 'get content, url={}, headers={}, retry={}, kwargs={}'.format(url, headers, retry, kwargs))
-    response = url if isinstance(url, HTTPResponse) else urlopen_with_retry(url, headers, retry, **kwargs)
-    data = response.read()
+    if isinstance(url, HTTPResponse):
+        response = url
+        url = response.geturl()
+    else:
+        response = urlopen_with_retry(url, headers, retry, **kwargs)
+    data = None
+    for i in range(1, retry + 1):
+        try:
+            data = response.read()
+            break
+        except socket.timeout as e:
+            Log.w(TAG, 'read response attempt {} timeout'.format(i))
+            if i == retry:
+                raise e
+            else:
+                response = urlopen_with_retry(url, headers, 1, **kwargs)
 
     content_encoding = response.headers['Content-Encoding']
     if content_encoding == 'gzip':
@@ -160,7 +174,7 @@ def url_save(url: Union[str, Request],
                 try:
                     buffer = response.read(bs)
                 except socket.timeout:
-                    Log.i(TAG, 'timeout during downloading, retrying')
+                    Log.w(TAG, 'timeout during downloading, retrying')
                 if buffer:
                     f.write(buffer)
                     part_size += len(buffer)
