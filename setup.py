@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setup(
     name='dict2anki',
-    version='0.6.0',
+    version='0.6.1',
     author='Binbin Qian',
     author_email='qianbinbin@hotmail.com',
     url='https://github.com/qianbinbin/dict2anki',
@@ -18,5 +18,5 @@ setup(
             'dict2anki = dict2anki.__main__:main'
         ]
     },
-    python_requires='>=3.5',
+    python_requires='>=3.7',
 )

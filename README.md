@@ -12,7 +12,7 @@
 
 ## 使用环境
 
-- [Python3](https://www.python.org/)
+- [Python >=3.7](https://www.python.org/)
 
 ## 安装
 
