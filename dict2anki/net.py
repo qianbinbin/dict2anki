@@ -41,12 +41,8 @@ def urlopen_with_retry(url: Union[str, Request],
     for i in range(1, retry + 1):
         try:
             return urlopen(url, **kwargs)
-        except socket.timeout as e:
-            Log.w(TAG, 'urlopen attempt {} timeout'.format(i))
-            if i == retry:
-                raise e
         except Exception as e:
-            Log.w(TAG, 'urlopen error: {}'.format(e))
+            Log.w(TAG, 'urlopen attempt {} error: {}'.format(i, e))
             if i == retry:
                 raise e
 
@@ -66,8 +62,8 @@ def url_get_content(url: Union[str, Request, HTTPResponse],
         try:
             data = response.read()
             break
-        except socket.timeout as e:
-            Log.w(TAG, 'read response attempt {} timeout'.format(i))
+        except Exception as e:
+            Log.w(TAG, 'read response attempt {} error: {}'.format(i, e))
             if i == retry:
                 raise e
             else:
