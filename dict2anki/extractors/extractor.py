@@ -101,7 +101,7 @@ class CardExtractor(metaclass=ABCMeta):
                     try:
                         actual, fields = await asyncio.get_running_loop().run_in_executor(None, self.get_card, word)
                     except Exception as e:
-                        Log.e(TAG, e)
+                        Log.e(TAG, 'can\'t get card: "{}", {}'.format(word, e))
                         async with lock:
                             skipped.append(word)
                         Log.e(TAG, 'skipped: "{}"'.format(word))

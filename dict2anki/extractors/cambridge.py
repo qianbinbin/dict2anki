@@ -97,7 +97,7 @@ class CambridgeExtractor(CardExtractor):
         if not actual:
             raise WordNotFoundError('can\'t find: "{}"'.format(word))
         if actual != ' '.join(word.replace('/', ' ').replace('-', ' ').replace('\'', ' ').lower().split()):
-            Log.i(TAG, 'redirected to: "{}"'.format(actual))
+            Log.i(TAG, 'redirected "{}" to: "{}"'.format(word, actual))
         content = url_get_content(response, fake_headers())
         fields = self._extract_fields(content)
         Log.d(TAG, 'parsed: "{}"'.format(actual))
