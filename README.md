@@ -95,6 +95,6 @@ $ python3 -m dict2anki -i /path/to/list.txt
 再使用以下命令将单词还原到 `out.txt` 中：
 
 ```sh
-awk -F '\t' '{print $1}' notes.txt >out.txt
+$ awk -F '\t' '{print $1}' notes.txt >out.txt
 ```
 
